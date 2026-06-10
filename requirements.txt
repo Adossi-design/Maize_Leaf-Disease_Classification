@@ -1,0 +1,18 @@
+# Core
+numpy
+pandas
+
+# Traditional ML
+scikit-learn
+scikit-image      # HOG feature extraction
+Pillow            # image loading
+
+# Deep learning
+tensorflow        # includes Keras
+
+# Plotting / evaluation
+matplotlib
+seaborn
+
+# Notebook
+jupyter
