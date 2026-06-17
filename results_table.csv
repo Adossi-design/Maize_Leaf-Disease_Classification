@@ -1,0 +1,10 @@
+Exp,Approach,Model,Key settings,Accuracy,Macro-F1,Notes / insight
+E1,Traditional ML,Logistic Regression,"HSV+HOG, C=1.0, multinomial",0.8521,0.815,"Linear baseline on handcrafted features, the weakest of the classical models."
+E2,Traditional ML,Random Forest,"HSV+HOG, 300 trees",0.8665,0.7954,Nonlinear ensemble with higher accuracy than E1 but low macro-F1 because it misses Gray Leaf Spot.
+E3,Traditional ML,SVM (RBF),"HSV+HOG, tuned {'C': 10, 'gamma': 'scale'}",0.8808,0.8547,"Best classical model, but still below every CNN on this run."
+E4,Deep learning,CNN baseline,"Sequential, 3 conv blocks, no aug, Adam 1e-3",0.8983,0.886,"From-scratch CNN that already beats every classical model, though it trains unstably."
+E5,Deep learning,CNN + augmentation,Sequential + flip/rotate/zoom/contrast,0.8776,0.8608,Augmentation did not help here and came out slightly below the E4 baseline.
+E6,Deep learning,CNN + class weights,E5 + balanced class_weight,0.8919,0.875,"Class weights did not beat the plain baseline, since the imbalance is too mild to need fixing."
+E7,Deep learning,CNN + oversampling,E5 + oversample minority class,0.8744,0.8573,"Oversampling also stayed below the baseline, the same lesson as E6."
+E8,Deep learning,MobileNetV2 (frozen),"Functional, ImageNet base frozen, head only",0.9173,0.8949,Pretrained features give a clear jump over the from-scratch CNN.
+E9,Deep learning,MobileNetV2 (fine-tuned),"Functional, top ~30 layers unfrozen, Adam 1e-5",0.9316,0.9117,Fine-tuning gives the best and most stable result of the project.
