@@ -1,0 +1,38 @@
+# Dataset images (do not commit, download separately)
+data/*
+!data/README.md
+*.zip
+
+# Saved models / weights
+models/*
+!models/.gitkeep
+*.h5
+*.keras
+
+# Credentials (never commit these)
+kaggle.json
+*.json
+!.vscode/*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Colab session junk (auto-created, not part of the project)
+sample_data/
+.config/
+
+# Written report (kept local, not pushed)
+report/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
