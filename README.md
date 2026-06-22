@@ -48,11 +48,11 @@ maize-leaf-disease-classification/
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
-├── notebook/        # main Jupyter/Colab notebook
-├── data/            # how to get the dataset (images not committed)
-├── report/          # written report (PDF)
-├── figures/         # exported plots: confusion matrices, learning curves, ROC
-└── models/          # saved model weights (optional)
+├── notebook/        
+├── data/            
+├── report/          
+├── figures/         
+└── models/          
 ```
 
 ## How to run
@@ -66,8 +66,7 @@ The notebook sets random seeds so the results are reproducible.
 
 ## Results summary
 
-Test set results (best run per model family; full per-experiment numbers are in the
-notebook and `results_table.csv`):
+Test set results:
 
 | Model | Accuracy | Macro-F1 |
 |-------|----------|----------|
@@ -84,5 +83,6 @@ for every model, usually confused with Blight.
 
 ## Links
 
-- Report: `report/report.pdf`
+- Report: https://docs.google.com/document/d/1b7piDS5D7QGkNwsOnpGy9yrOy5c_IAWAk8_6HFKNihY/edit?usp=sharing
+
 - Demo video: https://docs.google.com/presentation/d/1_piAlzaqfzqzOVnwg2V6BCT9THYPzBV1zBZMvfn9g_g/edit?usp=sharing
