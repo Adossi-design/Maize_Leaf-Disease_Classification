@@ -235,9 +235,6 @@ p { margin: 0; }
   </span>
   <span class="readouts">
     <span class="pill" id="chip" data-state="loading"><i class="led" aria-hidden="true"></i><span id="chip-text">Loading model</span></span>
-    <span class="dim" id="phase">Standby</span>
-    <span class="dim" id="clock">T+00:00:00</span>
-    <span class="dim">1.0.0</span>
   </span>
 </div>
 
@@ -431,15 +428,7 @@ const pct = p => Math.round(p * 100) + '%';
 let model = null, modelState = 'loading', current = null;
 
 /* ---------- Chrome ---------- */
-const started = Date.now();
-setInterval(() => {
-  const s = Math.floor((Date.now() - started) / 1000);
-  const p = n => String(n).padStart(2, '0');
-  $('clock').textContent = `T+${p(Math.floor(s / 3600))}:${p(Math.floor(s / 60) % 60)}:${p(s % 60)}`;
-}, 1000);
-
 function setPhase(word, hint) {
-  $('phase').textContent = word;
   $('conf-word').textContent = word;
   if (hint !== undefined) $('side-hint').textContent = hint;
 }
