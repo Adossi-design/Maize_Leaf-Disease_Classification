@@ -11,8 +11,9 @@ models/*
 
 # Credentials (never commit these)
 kaggle.json
-*.json
-!.vscode/*.json
+*credentials*.json
+*secret*.json
+service-account*.json
 
 # Python
 __pycache__/

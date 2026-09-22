@@ -1,0 +1,3 @@
+# The trained model is uploaded to the Space directly, not to GitHub
+*.keras
+*.h5
