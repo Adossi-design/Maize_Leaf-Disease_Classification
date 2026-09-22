@@ -9,7 +9,6 @@
   --green-deep: #0c7d3d;
   --green-ink: #ffffff;
   --mint: #eaf6ee;
-  --mint-2: #d7ecdf;
   --ground: #f4f8f5;
   --panel: #ffffff;
   --panel-2: #f7faf8;
@@ -31,10 +30,9 @@
   :root:not([data-theme="light"]) {
     color-scheme: dark;
     --green: #14b45a;
-    --green-deep: #0e8b45;
+    --green-deep: #34c46f;
     --green-ink: #06170d;
     --mint: #12231a;
-    --mint-2: #1a3126;
     --ground: #0a100d;
     --panel: #121b16;
     --panel-2: #0f1713;
@@ -54,10 +52,9 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
   --green: #14b45a;
-  --green-deep: #0e8b45;
+  --green-deep: #34c46f;
   --green-ink: #06170d;
   --mint: #12231a;
-  --mint-2: #1a3126;
   --ground: #0a100d;
   --panel: #121b16;
   --panel-2: #0f1713;
@@ -76,40 +73,48 @@
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-body { min-height: 100vh; display: flex; flex-direction: column; background: var(--ground); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.5; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.5; overflow: hidden; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-/* ---------- Chrome ---------- */
-.topbar, .statusbar { background: var(--green); color: var(--green-ink); }
-.topbar {
-  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 10px 20px; flex-wrap: wrap;
+/* ---------- App shell: only .scroll ever scrolls ---------- */
+.app {
+  height: 100dvh; max-height: 100dvh;
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 330px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "head head head" "rail main side" "foot foot foot";
 }
-.mark { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 14px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
-.readouts { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
-.pill { border: 1px solid rgba(255,255,255,.55); border-radius: 999px; padding: 3px 12px; display: inline-flex; align-items: center; gap: 7px; }
-.pill .led { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.app[data-view="guide"], .app[data-view="log"] {
+  grid-template-columns: 96px minmax(0, 1fr);
+  grid-template-areas: "head head" "rail main" "foot foot";
+}
+.app[data-view="guide"] .side, .app[data-view="log"] .side { display: none; }
+
+.topbar {
+  grid-area: head; background: var(--green); color: var(--green-ink);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 18px 26px; padding-top: calc(18px + env(safe-area-inset-top, 0px));
+  border-bottom: 1px solid rgba(255, 255, 255, .16);
+}
+.mark { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.mark .badge {
+  flex: none; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+  background: rgba(255, 255, 255, .14); border: 1px solid rgba(255, 255, 255, .28);
+}
+.mark .name { font-size: 20px; font-weight: 600; letter-spacing: .01em; line-height: 1.15; }
+.mark .tag { font-family: var(--mono); font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; opacity: .82; }
+.pill {
+  font-family: var(--mono); font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,.5); background: rgba(255, 255, 255, .12); border-radius: 999px;
+  padding: 7px 16px; display: inline-flex; align-items: center; gap: 9px; white-space: nowrap;
+}
+.pill .led { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 .pill[data-state="loading"] .led { animation: blink 1.1s steps(2, start) infinite; }
 .pill[data-state="missing"] .led, .pill[data-state="error"] .led { background: #ffd0d0; }
 @keyframes blink { 50% { opacity: .25; } }
-@media (prefers-reduced-motion: reduce) { .pill .led { animation: none !important; } }
-.readouts .dim { opacity: .82; }
 
-.statusbar {
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;
-  padding: 14px 20px calc(14px + env(safe-area-inset-bottom, 0px));
-}
-.statusbar .k { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; opacity: .78; }
-.statusbar .v { font-family: var(--mono); font-size: 18px; font-weight: 500; }
-@media (max-width: 560px) { .statusbar { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-
-/* ---------- Shell ---------- */
-.shell { flex: 1 0 auto; display: grid; grid-template-columns: 92px minmax(0, 1fr) 320px; gap: 0; align-items: stretch; }
-@media (max-width: 1040px) { .shell { grid-template-columns: 76px minmax(0, 1fr); } .side { grid-column: 1 / -1; } }
-@media (max-width: 720px) { .shell { grid-template-columns: minmax(0, 1fr); } }
-
-.rail { border-right: 1px solid var(--line); background: var(--panel-2); display: grid; align-content: start; gap: 4px; padding: 16px 8px; }
+.rail { grid-area: rail; background: var(--panel-2); border-right: 1px solid var(--line); padding: 16px 8px; display: grid; align-content: start; gap: 4px; }
 .rail button {
   display: grid; justify-items: center; gap: 6px; width: 100%; padding: 12px 4px;
   background: none; border: 0; border-radius: 10px; cursor: pointer; color: var(--muted);
@@ -117,35 +122,62 @@ body { min-height: 100vh; display: flex; flex-direction: column; background: var
 }
 .rail button[aria-current="true"] { background: var(--mint); color: var(--green-deep); }
 .rail button:hover { color: var(--ink); }
-@media (max-width: 720px) {
-  .rail { grid-auto-flow: column; border-right: 0; border-bottom: 1px solid var(--line); padding: 8px; position: sticky; top: calc(44px + env(safe-area-inset-top, 0px)); z-index: 4; }
-  .rail button { flex-direction: row; }
-}
 
-main { padding: 20px; display: grid; gap: 16px; align-content: start; min-width: 0; }
-.side { border-left: 1px solid var(--line); background: var(--panel-2); padding: 20px; display: grid; gap: 18px; align-content: start; min-width: 0; }
-@media (max-width: 1040px) { .side { border-left: 0; border-top: 1px solid var(--line); } }
-@media (max-width: 600px) { main, .side { padding: 16px; } }
+main { grid-area: main; overflow-y: auto; overscroll-behavior: contain; padding: 20px; display: grid; gap: 16px; align-content: start; min-width: 0; }
+.side { grid-area: side; background: var(--panel-2); border-left: 1px solid var(--line); padding: 20px; display: grid; gap: 16px; align-content: start; overflow-y: auto; min-width: 0; }
+
+.statusbar {
+  grid-area: foot; background: var(--green); color: var(--green-ink);
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;
+  padding: 12px 20px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+}
+.statusbar .k { font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
+.statusbar .v { font-family: var(--mono); font-size: 17px; font-weight: 500; }
+
+/* Narrow: rail on top, readout becomes a fixed action strip above the footer */
+@media (max-width: 1040px) {
+  .app, .app[data-view="guide"], .app[data-view="log"] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+    grid-template-areas: "head" "rail" "main" "side" "foot";
+  }
+  .rail { grid-auto-flow: column; border-right: 0; border-bottom: 1px solid var(--line); padding: 6px; }
+  .rail button { grid-auto-flow: column; justify-items: center; align-items: center; gap: 8px; padding: 10px 4px; }
+  .side {
+    border-left: 0; border-top: 1px solid var(--line); overflow: visible;
+    grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 12px 16px;
+  }
+  .side .resp, .side .side-hint { display: none; }
+  .statusbar { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 10px 14px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
+  .statusbar .v { font-size: 14px; }
+  .statusbar .k { font-size: 9.5px; }
+}
+@media (max-width: 700px) {
+  .topbar { padding: 12px 16px; padding-top: calc(12px + env(safe-area-inset-top, 0px)); gap: 10px; }
+  .mark { gap: 10px; }
+  .mark .badge { width: 36px; height: 36px; border-radius: 10px; }
+  .mark .name { font-size: 16px; }
+  .mark .tag { display: none !important; }
+  .pill { font-size: 11px; padding: 5px 11px; gap: 7px; letter-spacing: .08em; }
+}
+@media (max-width: 600px) { main { padding: 14px; } }
+@media (max-width: 420px) { .statusbar { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 .label { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-h1 { margin: 0; font-size: 22px; letter-spacing: -.01em; }
+h1 { margin: 0; font-size: 21px; letter-spacing: -.01em; }
 h2 { margin: 0; font-size: 17px; }
 h3 { margin: 0; font-size: 15px; }
 p { margin: 0; }
-
 .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 18px; display: grid; gap: 14px; align-content: start; }
 
 /* ---------- Stage ---------- */
-.stage {
-  position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
-  box-shadow: var(--shadow); min-height: 320px; display: grid; place-items: center; overflow: hidden;
-}
+.stage { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); min-height: 300px; display: grid; place-items: center; overflow: hidden; }
 .stage.drag { border-color: var(--green); background: var(--mint); }
-.drop { display: grid; justify-items: center; gap: 10px; padding: 48px 24px; text-align: center; cursor: pointer; width: 100%; }
+.drop { display: grid; justify-items: center; gap: 10px; padding: 44px 24px; text-align: center; cursor: pointer; width: 100%; }
 .drop svg { color: var(--muted); }
 .drop .t { font-family: var(--mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); }
 .drop .s { font-size: 14px; color: var(--muted); }
-.shot { position: relative; width: 100%; aspect-ratio: 1; max-height: 460px; }
+.shot { position: relative; width: 100%; aspect-ratio: 1; max-height: 420px; }
 .shot img { width: 100%; height: 100%; object-fit: cover; display: block; max-width: 100%; }
 .shot .corners { position: absolute; inset: 16px; pointer-events: none; }
 .shot .corners i { position: absolute; width: 26px; height: 26px; border: 3px solid rgba(255,255,255,.9); }
@@ -158,7 +190,16 @@ p { margin: 0; }
   font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
   display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
 }
-.busy { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(6, 23, 13, .55); color: #fff; font-family: var(--mono); font-size: 13px; letter-spacing: .16em; text-transform: uppercase; }
+.scan { position: absolute; inset: 0; pointer-events: none; background: rgba(6, 23, 13, .35); display: grid; place-items: center; }
+.scan::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 3px; top: 0;
+  background: linear-gradient(90deg, transparent, #7ff0a8, transparent);
+  box-shadow: 0 0 18px rgba(127, 240, 168, .9);
+  animation: sweep 1.1s ease-in-out infinite;
+}
+.scan span { font-family: var(--mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #fff; }
+@keyframes sweep { 0% { top: 4%; } 50% { top: 96%; } 100% { top: 4%; } }
+@media (prefers-reduced-motion: reduce) { .scan::after { animation: none; top: 50%; } .pill .led { animation: none !important; } }
 
 .btnrow { display: flex; gap: 10px; flex-wrap: wrap; }
 .btn {
@@ -174,20 +215,27 @@ p { margin: 0; }
 .btn.mono { font-family: var(--mono); font-size: 13px; letter-spacing: .16em; text-transform: uppercase; }
 .btn:focus-visible, .rail button:focus-visible, .ex:focus-visible, .drop:focus-visible { outline: 3px solid var(--warning); outline-offset: 2px; }
 
-/* ---------- Side readout ---------- */
-.conf { display: grid; gap: 2px; }
-.conf .big { font-family: var(--mono); font-size: 46px; font-weight: 500; line-height: 1.05; color: var(--green-deep); letter-spacing: -.02em; }
-.conf .big.dim { color: var(--muted); }
-.conf .word { font-family: var(--mono); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-2); }
+/* ---------- Readout ---------- */
+.dial { position: relative; width: 132px; height: 132px; justify-self: center; }
+.dial svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.dial .val { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.dial .num { font-family: var(--mono); font-size: 27px; font-weight: 500; line-height: 1; color: var(--green-deep); }
+.dial .num.dim { color: var(--muted); }
+.dial .word { font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+@media (prefers-reduced-motion: no-preference) { .dial .arc { transition: stroke-dashoffset .5s ease; } }
+@media (max-width: 1040px) { .dial { width: 62px; height: 62px; } .dial .num { font-size: 16px; } .dial .word { display: none; } }
+
 .resp { display: grid; gap: 10px; }
-.resp .row { display: grid; grid-template-columns: minmax(0, 1fr) 52px; gap: 8px 10px; align-items: center; font-size: 14px; }
+.resp .row { display: grid; grid-template-columns: minmax(0, 1fr) 52px; gap: 6px 10px; align-items: center; font-size: 14px; }
 .resp .row .n { color: var(--ink-2); }
 .resp .row.top .n { color: var(--ink); font-weight: 600; }
 .resp .row .p { font-family: var(--mono); font-size: 13px; text-align: right; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .resp .row .track { grid-column: 1 / -1; height: 8px; background: var(--line-2); border-radius: 4px; overflow: hidden; }
 .resp .row .fill { display: block; height: 100%; width: 0; background: var(--bar); border-radius: 0 4px 4px 0; }
 .resp .row.top .fill { background: var(--green); }
-@media (prefers-reduced-motion: no-preference) { .resp .fill { transition: width .35s ease; } }
+@media (prefers-reduced-motion: no-preference) { .resp .fill { transition: width .4s ease; } }
+.side-state { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
+.side-hint { font-size: 13px; color: var(--muted); }
 .side .divider { height: 1px; background: var(--line); }
 
 /* ---------- Checks, verdict ---------- */
@@ -197,7 +245,7 @@ p { margin: 0; }
 .verdict-head { display: flex; gap: 14px; align-items: center; }
 .verdict-head .badge { flex: none; width: 46px; height: 46px; border-radius: 10px; display: grid; place-items: center; background: var(--mint); }
 .verdict-head .conf-line { font-family: var(--mono); font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); }
-.verdict-head h2 { font-size: 24px; line-height: 1.15; text-wrap: balance; }
+.verdict-head h2 { font-size: 23px; line-height: 1.15; text-wrap: balance; }
 .verdict-head .sub { font-size: 13.5px; color: var(--muted); }
 .panel[data-kind="healthy"] { border-left: 5px solid var(--good); }
 .panel[data-kind="disease"] { border-left: 5px solid var(--serious); }
@@ -209,6 +257,13 @@ p { margin: 0; }
 .advice ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
 .advice h3 { margin-top: 6px; }
 .disclaimer { font-size: 13.5px; color: var(--muted); border-top: 1px solid var(--line-2); padding-top: 12px; }
+.mini { display: grid; gap: 6px; }
+.mini .r { display: grid; grid-template-columns: 116px minmax(0, 1fr) 46px; gap: 10px; align-items: center; font-size: 14px; color: var(--ink-2); }
+.mini .track { height: 8px; background: var(--line-2); border-radius: 4px; overflow: hidden; }
+.mini .fill { display: block; height: 100%; background: var(--bar); border-radius: 0 4px 4px 0; }
+.mini .r.top .fill { background: var(--green); }
+.mini .p { font-family: var(--mono); font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; }
+@media (min-width: 1041px) { .mini { display: none; } }
 
 /* ---------- Examples, log, guide ---------- */
 .ex-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
@@ -221,24 +276,28 @@ p { margin: 0; }
 .log .l { font-weight: 600; }
 .log .t { font-family: var(--mono); font-size: 12px; color: var(--muted); }
 .log .c { font-family: var(--mono); font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+.guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
 .tips { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--ink-2); }
-.kv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; font-size: 14.5px; }
+.kv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 14px; font-size: 14.5px; margin: 0; }
 .kv dt { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
 .kv dd { margin: 0; color: var(--ink-2); }
+kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 1px 5px; color: var(--ink-2); background: var(--panel); }
 </style>
 
-<div class="topbar">
-  <span class="mark">
-    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21c0-9 5-15 15-17-1 10-7 15-15 17z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M5 21l8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    Maize Leaf Diagnostic
-  </span>
-  <span class="readouts">
+<div class="app" id="app" data-view="check">
+  <div class="topbar">
+    <span class="mark">
+      <span class="badge" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 21c0-9 5-15 15-17-1 10-7 15-15 17z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M5 21l8-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </span>
+      <span>
+        <span class="name">Maize Leaf Diagnostic</span>
+        <span class="tag" style="display:block">Four diseases · One photo · One answer</span>
+      </span>
+    </span>
     <span class="pill" id="chip" data-state="loading"><i class="led" aria-hidden="true"></i><span id="chip-text">Loading model</span></span>
-  </span>
-</div>
+  </div>
 
-<div class="shell">
   <nav class="rail" aria-label="Sections">
     <button type="button" data-view="check" aria-current="true">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3"/><circle cx="12" cy="12" r="3.2"/></svg>
@@ -254,7 +313,7 @@ p { margin: 0; }
     </button>
   </nav>
 
-  <main>
+  <main id="scroll">
     <!-- CHECK -->
     <section id="view-check" style="display:grid;gap:16px">
       <div>
@@ -272,7 +331,7 @@ p { margin: 0; }
           <img id="preview" alt="The leaf photo being checked">
           <div class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
           <div class="tagline"><span id="shot-src">Camera</span><span>Only inside the square is read</span></div>
-          <div class="busy" id="busy" hidden>Reading leaf…</div>
+          <div class="scan" id="busy" hidden><span>Reading leaf</span></div>
         </div>
       </div>
 
@@ -322,12 +381,13 @@ p { margin: 0; }
       <section class="panel">
         <h2>What this tool can and cannot do</h2>
         <dl class="kv">
-          <dt>Knows</dt><dd>Four things only: Blight, Common Rust, Gray Leaf Spot and healthy maize leaves. It cannot recognise other crops, pests, or problems caused by drought or poor soil.</dd>
-          <dt>Accuracy</dt><dd>Right 93% of the time on 629 test photos. It learned mostly from close-up photos in good light, so photos taken in a field are likely to be less accurate.</dd>
+          <dt>Knows</dt><dd>Four things only: Blight, Common Rust, Gray Leaf Spot and healthy maize leaves. It cannot recognise other crops, pests, or damage from drought or poor soil.</dd>
+          <dt>Accuracy</dt><dd>Right 93% of the time on 629 test photos. It learned mostly from close-up photos in good light, so photos taken in a field are less reliable.</dd>
           <dt>Weak spot</dt><dd>Blight and Gray Leaf Spot look alike. In testing the model called about 1 in 4 Gray Leaf Spot leaves Blight.</dd>
           <dt>Privacy</dt><dd>The check runs on your phone. Photos are not uploaded and no one else sees them.</dd>
           <dt>No signal</dt><dd>Once the page has opened on this phone once, it keeps working without network, because the app and the model are stored on the phone.</dd>
-          <dt>Advice</dt><dd>This is a helper, not a final diagnosis. Confirm with your local agricultural extension officer before spending money on treatment.</dd>
+          <dt>Keys</dt><dd><kbd>P</kbd> reads the leaf, <kbd>C</kbd> clears the photo, <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> switch sections.</dd>
+          <dt>Advice</dt><dd>A helper, not a diagnosis. Confirm with your local agricultural extension officer before spending money on treatment.</dd>
         </dl>
       </section>
     </section>
@@ -346,27 +406,27 @@ p { margin: 0; }
     </section>
   </main>
 
-  <aside class="side">
-    <div class="conf">
-      <span class="label">Confidence</span>
-      <span class="big dim" id="conf-big">--</span>
-      <span class="word" id="conf-word">Standby</span>
+  <aside class="side" aria-label="Reading">
+    <div class="dial">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="var(--line-2)" stroke-width="10"></circle>
+        <circle class="arc" id="arc" cx="60" cy="60" r="52" fill="none" stroke="var(--green)" stroke-width="10"
+                stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"></circle>
+      </svg>
+      <div class="val"><span class="num dim" id="conf-num">--</span><span class="word" id="conf-word">Standby</span></div>
     </div>
-    <div class="divider"></div>
-    <div>
-      <span class="label">Response</span>
-      <div class="resp" id="resp" style="margin-top:10px"></div>
-    </div>
+    <div class="side-state" id="side-state">Standby</div>
+    <div class="resp" id="resp"></div>
     <button class="btn primary block mono" type="button" id="predict" disabled>Predict</button>
-    <p class="label" id="side-hint">Add a photo to begin</p>
+    <p class="side-hint" id="side-hint">Add a photo to begin</p>
   </aside>
-</div>
 
-<div class="statusbar">
-  <div><div class="k">Model</div><div class="v">MobileNetV2</div></div>
-  <div><div class="k">Train set</div><div class="v">2,930</div></div>
-  <div><div class="k">Test acc</div><div class="v">93.2%</div></div>
-  <div><div class="k">Checked</div><div class="v" id="served">0</div></div>
+  <div class="statusbar">
+    <div><div class="k">Model</div><div class="v">MobileNetV2</div></div>
+    <div><div class="k">Train set</div><div class="v">2,930</div></div>
+    <div><div class="k">Test acc</div><div class="v">93.2%</div></div>
+    <div><div class="k">Checked</div><div class="v" id="served">0</div></div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
@@ -376,6 +436,7 @@ const MODEL_URL = 'model/model.json';
 const IMG = 128;
 const CLASSES = ['Blight', 'Common Rust', 'Gray Leaf Spot', 'Healthy'];
 const SURE = 0.80, MAYBE = 0.55, MIN_GREEN = 0.10;
+const ARC = 326.7;
 
 const INFO = {
   'Blight': {
@@ -430,9 +491,10 @@ const $ = id => document.getElementById(id);
 const pct = p => Math.round(p * 100) + '%';
 let model = null, modelState = 'loading', current = null;
 
-/* ---------- Chrome ---------- */
+/* ---------- Readout ---------- */
 function setPhase(word, hint) {
   $('conf-word').textContent = word;
+  $('side-state').textContent = word;
   if (hint !== undefined) $('side-hint').textContent = hint;
 }
 function setChip(state, text) {
@@ -441,16 +503,10 @@ function setChip(state, text) {
   $('chip-text').textContent = text;
 }
 
-document.querySelectorAll('.rail button').forEach(b => b.addEventListener('click', () => {
-  document.querySelectorAll('.rail button').forEach(o => o.setAttribute('aria-current', String(o === b)));
-  ['check', 'guide', 'log'].forEach(v => { $('view-' + v).hidden = v !== b.dataset.view; });
-  window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-}));
-
-/* ---------- Response rows ---------- */
 $('resp').innerHTML = CLASSES.map((c, i) => `
   <div class="row" id="row-${i}"><span class="n">${c}</span><span class="p">--</span>
   <span class="track"><span class="fill"></span></span></div>`).join('');
+
 function setResponse(probs) {
   const top = probs ? probs.indexOf(Math.max(...probs)) : -1;
   CLASSES.forEach((c, i) => {
@@ -459,27 +515,51 @@ function setResponse(probs) {
     row.querySelector('.p').textContent = probs ? pct(probs[i]) : '--';
     row.querySelector('.fill').style.width = probs ? Math.max(probs[i] * 100, 1).toFixed(1) + '%' : '0%';
   });
-  const big = $('conf-big');
-  big.textContent = probs ? pct(probs[top]) : '--';
-  big.classList.toggle('dim', !probs);
+  const num = $('conf-num');
+  num.textContent = probs ? pct(probs[top]) : '--';
+  num.classList.toggle('dim', !probs);
+  $('arc').style.strokeDashoffset = ARC * (1 - (probs ? probs[top] : 0));
 }
+
+/* ---------- Views ---------- */
+function showView(name) {
+  $('app').dataset.view = name;
+  document.querySelectorAll('.rail button').forEach(b => b.setAttribute('aria-current', String(b.dataset.view === name)));
+  ['check', 'guide', 'log'].forEach(v => { $('view-' + v).hidden = v !== name; });
+  $('scroll').scrollTop = 0;
+}
+document.querySelectorAll('.rail button').forEach(b => b.addEventListener('click', () => showView(b.dataset.view)));
+
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input, textarea') || e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (k === 'p' && !$('predict').disabled) { e.preventDefault(); run(false); }
+  else if (k === 'c' && current) { e.preventDefault(); $('clear').click(); }
+  else if (k === '1') showView('check');
+  else if (k === '2') showView('guide');
+  else if (k === '3') showView('log');
+});
 
 /* ---------- Model ---------- */
 async function loadModel() {
-  if (typeof tf === 'undefined') { setChip('error', 'Offline'); setPhase('No model', 'The checker could not load. Check your connection and reload.'); return; }
+  if (typeof tf === 'undefined') {
+    setChip('error', 'Offline');
+    setPhase('Standby', 'The checker could not load. Check your connection and reload.');
+    return;
+  }
   let meta;
   try {
-    const res = await fetch(MODEL_URL, { cache: 'no-cache' });
+    const res = await fetch(MODEL_URL, { cache: 'force-cache' });
     if (!res.ok) throw new Error('missing');
     meta = await res.json();
   } catch (e) {
     setChip('missing', 'No model');
-    setPhase('Standby', 'The model has not been added to this page yet, so photos cannot be checked.');
+    setPhase('Standby', 'The model has not been added to this page yet, so photos cannot be read.');
     $('predict').disabled = true;
     return;
   }
   try {
-    const opts = { onProgress: p => { setChip('loading', 'Loading ' + Math.round(p * 100) + '%'); } };
+    const opts = { onProgress: p => setChip('loading', 'Loading ' + Math.round(p * 100) + '%') };
     model = meta.format === 'layers-model' ? await tf.loadLayersModel(MODEL_URL, opts) : await tf.loadGraphModel(MODEL_URL, opts);
     tf.tidy(() => { const o = model.predict(tf.zeros([1, IMG, IMG, 3])); (Array.isArray(o) ? o[0] : o).dataSync(); });
     setChip('ready', 'Model ready');
@@ -488,7 +568,7 @@ async function loadModel() {
   } catch (e) {
     console.error(e);
     setChip('error', 'Model error');
-    setPhase('No model', 'The model could not start on this phone. Try reloading or another browser.');
+    setPhase('Standby', 'The model could not start on this phone. Try reloading or another browser.');
   }
 }
 
@@ -568,8 +648,9 @@ function useImage(src, w, h, origin) {
   $('verdict').hidden = true;
   setResponse(null);
   renderChecks(current.quality);
+  showView('check');
   $('predict').disabled = modelState !== 'ready';
-  setPhase(modelState === 'ready' ? 'Ready' : 'No model',
+  setPhase(modelState === 'ready' ? 'Ready' : 'Standby',
     modelState === 'ready' ? 'Press Predict to read this leaf' : $('side-hint').textContent);
 }
 
@@ -615,11 +696,16 @@ async function run(forced) {
   } catch (e) {
     console.error(e);
     showCard('unsure', 'Something went wrong', 'The photo could not be read. Try again, or use another photo.');
-    setPhase('Error', 'Try again with another photo');
+    setPhase('Standby', 'Try again with another photo');
   } finally {
     $('busy').hidden = true;
     $('predict').disabled = false;
   }
+}
+
+function scrollToVerdict() {
+  const v = $('verdict');
+  $('scroll').scrollTo({ top: v.offsetTop - 12, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }
 
 function showCard(kind, title, text, extra) {
@@ -628,7 +714,7 @@ function showCard(kind, title, text, extra) {
   v.hidden = false;
   v.innerHTML = `<div class="verdict-head"><span class="badge">${ICON.unsure}</span><div><h2>${title}</h2></div></div>
     <div class="advice"><p>${text}</p></div>${extra || ''}`;
-  v.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+  scrollToVerdict();
 }
 
 function showBlocked() {
@@ -645,7 +731,7 @@ function showResult(probs, forced) {
   const label = CLASSES[i1], sure = p1 >= SURE, maybe = p1 >= MAYBE;
   const kind = !maybe ? 'unsure' : label === 'Healthy' ? 'healthy' : 'disease';
   const info = INFO[label];
-  setPhase(!maybe ? 'Not sure' : sure ? 'Confident' : 'Fair', !maybe ? 'Take another photo' : 'Result below the photo');
+  setPhase(!maybe ? 'Not sure' : sure ? 'Confident' : 'Fair', !maybe ? 'Take another photo' : 'Result is below the photo');
 
   const notes = [];
   if (maybe && !sure) notes.push('<b>Only fairly sure.</b> Photograph another leaf with the same marks to confirm.');
@@ -664,6 +750,11 @@ function showResult(probs, forced) {
     : `<div class="advice"><h3>What it looks like</h3><p>${info.looks}</p>
          <h3>What you can do</h3><ul>${info.todo.map(t => `<li>${t}</li>`).join('')}</ul></div>`;
 
+  const mini = `<div class="mini">${order.map(([p, i], k) => `
+    <div class="r${k === 0 ? ' top' : ''}"><span>${CLASSES[i]}</span>
+    <span class="track"><span class="fill" style="width:${Math.max(p * 100, 1).toFixed(1)}%"></span></span>
+    <span class="p">${pct(p)}</span></div>`).join('')}</div>`;
+
   const v = $('verdict');
   v.dataset.kind = kind;
   v.hidden = false;
@@ -674,10 +765,11 @@ function showResult(probs, forced) {
         <h2>${!maybe ? 'The model cannot tell from this photo' : label}</h2>
         <div class="sub">${!maybe ? `Closest: ${CLASSES[i1]} ${pct(p1)} or ${CLASSES[i2]} ${pct(p2)}` : info.latin}</div>
       </div></div>
+    ${mini}
     ${notes.map(n => `<div class="note">${ICON.info}<span>${n}</span></div>`).join('')}
     ${body}
     <p class="disclaimer">A helper, not a final diagnosis. Show the leaf to your local agricultural extension officer before spending money on treatment.</p>`;
-  v.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+  scrollToVerdict();
 
   addLog({ thumb: current.thumb, label: maybe ? label : 'Not sure', conf: p1, t: Date.now() });
 }
@@ -721,7 +813,7 @@ sheet.onload = () => {
     btn.append(c, s);
     btn.addEventListener('click', () => {
       useImage(c, 308, 308, 'Example · ' + e.label);
-      stage.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      $('scroll').scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     });
     $('ex-row').appendChild(btn);
   });
