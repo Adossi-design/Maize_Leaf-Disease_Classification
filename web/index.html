@@ -1,3 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Photograph one maize leaf and find out whether it is healthy or shows Blight, Common Rust or Gray Leaf Spot. The model runs on your phone.">
+<meta name="theme-color" content="#12a150">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.png" sizes="64x64" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
 <title>Maize Leaf Diagnostic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -147,7 +158,7 @@ main { grid-area: main; overflow-y: auto; overscroll-behavior: contain; padding:
     border-left: 0; border-top: 1px solid var(--line); overflow: visible;
     grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 12px 16px;
   }
-  .side .resp, .side .side-hint { display: none; }
+  .side .resp, .side .side-hint, .side .side-only { display: none; }
   .statusbar { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 10px 14px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
   .statusbar .v { font-size: 14px; }
   .statusbar .k { font-size: 9.5px; }
@@ -283,7 +294,8 @@ p { margin: 0; }
 .kv dd { margin: 0; color: var(--ink-2); }
 kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 1px 5px; color: var(--ink-2); background: var(--panel); }
 </style>
-
+</head>
+<body>
 <div class="app" id="app" data-view="check">
   <div class="topbar">
     <span class="mark">
@@ -292,7 +304,7 @@ kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); 
       </span>
       <span>
         <span class="name">Maize Leaf Diagnostic</span>
-        <span class="tag" style="display:block">Four diseases · One photo · One answer</span>
+        <span class="tag" style="display:block">Photograph a leaf and find out what is wrong with it</span>
       </span>
     </span>
     <span class="pill" id="chip" data-state="loading"><i class="led" aria-hidden="true"></i><span id="chip-text">Loading model</span></span>
@@ -301,15 +313,15 @@ kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); 
   <nav class="rail" aria-label="Sections">
     <button type="button" data-view="check" aria-current="true">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3"/><circle cx="12" cy="12" r="3.2"/></svg>
-      Check
+      Check a leaf
     </button>
     <button type="button" data-view="guide">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 4h9l5 5v11H5z"/><path d="M14 4v5h5M8 13h8M8 17h5"/></svg>
-      Guide
+      How to use
     </button>
     <button type="button" data-view="log">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v6c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6M5 12v6c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6v-6"/></svg>
-      Log
+      My checks
     </button>
   </nav>
 
@@ -318,33 +330,33 @@ kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); 
     <section id="view-check" style="display:grid;gap:16px">
       <div>
         <h1>Check one maize leaf</h1>
-        <p class="label" style="margin-top:4px">Blight · Common Rust · Gray Leaf Spot · Healthy</p>
+        <p style="margin-top:6px;color:var(--ink-2);max-width:62ch">Take a clear photo of a single leaf. The app can recognise three maize diseases, Blight, Common Rust and Gray Leaf Spot, and it also knows what a healthy leaf looks like.</p>
       </div>
 
       <div class="stage" id="stage">
-        <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a leaf photo">
+        <div class="drop" id="drop" tabindex="0" role="button" aria-label="Add a photo of a maize leaf">
           <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 16V4M12 4L7 9M12 4l5 5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
-          <span class="t">Drop a leaf image</span>
-          <span class="s">or tap to take a photo</span>
+          <span class="t">Drag a photo of a leaf here</span>
+          <span class="s">You can also tap this box to take a photo with your camera.</span>
         </div>
         <div class="shot" id="shot" hidden>
-          <img id="preview" alt="The leaf photo being checked">
+          <img id="preview" alt="The photo of the leaf that the app is about to read">
           <div class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-          <div class="tagline"><span id="shot-src">Camera</span><span>Only inside the square is read</span></div>
-          <div class="scan" id="busy" hidden><span>Reading leaf</span></div>
+          <div class="tagline"><span id="shot-src">Camera</span><span>Only the part inside the square is read</span></div>
+          <div class="scan" id="busy" hidden><span>Reading the leaf</span></div>
         </div>
       </div>
 
       <div class="btnrow">
         <label class="btn primary" for="cam">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4"/></svg>
-          Take photo
+          Take a photo
         </label>
         <label class="btn" for="pick">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 16l5-5 4 4 2-2 5 5" stroke-linejoin="round"/></svg>
-          Choose photo
+          Choose a photo
         </label>
-        <button class="btn" type="button" id="clear" hidden>Clear</button>
+        <button class="btn" type="button" id="clear" hidden>Start again</button>
         <input class="sr" type="file" id="cam" accept="image/*" capture="environment">
         <input class="sr" type="file" id="pick" accept="image/*">
       </div>
@@ -354,8 +366,8 @@ kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); 
 
       <section class="panel">
         <div>
-          <h2>No leaf nearby? Try an example</h2>
-          <p class="label" style="margin-top:4px">Photos from the dataset the model learned on</p>
+          <h2>No leaf nearby? Try an example photo</h2>
+          <p style="margin-top:6px;color:var(--ink-2)">These four photos come from the dataset the model was trained on. Tap any of them to see how the app reads it.</p>
         </div>
         <div class="ex-row" id="ex-row"></div>
       </section>
@@ -364,30 +376,30 @@ kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); 
     <!-- GUIDE -->
     <section id="view-guide" hidden style="display:grid;gap:16px">
       <div>
-        <h1>Guide</h1>
-        <p class="label" style="margin-top:4px">How to photograph · what each disease looks like · limits</p>
+        <h1>How to use this app</h1>
+        <p style="margin-top:6px;color:var(--ink-2);max-width:62ch">This page explains how to take a photo the app can read, what each of the three diseases looks like on a leaf, and where the app is likely to be wrong.</p>
       </div>
       <section class="panel">
-        <h2>How to take a good photo</h2>
+        <h2>Taking a photo the app can read</h2>
         <ul class="tips">
-          <li>Photograph one leaf, close up, so it fills the square.</li>
-          <li>Use daylight. Avoid deep shadow and direct sun on the lens.</li>
-          <li>Hold the phone still. Tap the screen to focus before shooting.</li>
-          <li>Choose a leaf that shows the spots or marks you are worried about.</li>
-          <li>Check several plants across the field, not one leaf.</li>
+          <li>Photograph one leaf at a time, holding the phone close enough that the leaf fills the square.</li>
+          <li>Take the photo in daylight, and keep the leaf out of deep shadow and out of direct glare.</li>
+          <li>Hold the phone steady and tap the screen to focus before you take the photo, because a blurry photo is hard to read.</li>
+          <li>Choose a leaf that clearly shows the spots or marks you are worried about.</li>
+          <li>Check several plants in different parts of the field, because one leaf cannot tell you how the whole crop is doing.</li>
         </ul>
       </section>
       <div class="guide-grid" id="guide-cards"></div>
       <section class="panel">
-        <h2>What this tool can and cannot do</h2>
+        <h2>What this app can and cannot do</h2>
         <dl class="kv">
-          <dt>Knows</dt><dd>Four things only: Blight, Common Rust, Gray Leaf Spot and healthy maize leaves. It cannot recognise other crops, pests, or damage from drought or poor soil.</dd>
-          <dt>Accuracy</dt><dd>Right 93.0% of the time on the 629 test photos it never trained on. It learned mostly from close-up photos in good light, so photos taken in a field are less reliable.</dd>
-          <dt>Weak spot</dt><dd>Blight and Gray Leaf Spot look alike. In testing the model called 18 of the 86 Gray Leaf Spot leaves Blight, about 1 in 5.</dd>
-          <dt>Privacy</dt><dd>The check runs on your phone. Photos are not uploaded and no one else sees them.</dd>
-          <dt>No signal</dt><dd>Once the page has opened on this phone once, it keeps working without network, because the app and the model are stored on the phone.</dd>
-          <dt>Keys</dt><dd><kbd>P</kbd> reads the leaf, <kbd>C</kbd> clears the photo, <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> switch sections.</dd>
-          <dt>Advice</dt><dd>A helper, not a diagnosis. Confirm with your local agricultural extension officer before spending money on treatment.</dd>
+          <dt>What it knows</dt><dd>The app was taught four things and nothing else: Blight, Common Rust, Gray Leaf Spot and a healthy maize leaf. It cannot recognise other crops, insect damage, or problems caused by drought and poor soil, and it will still pick one of its four answers when it sees something else.</dd>
+          <dt>How accurate it is</dt><dd>On 629 photos that it never saw during training, the app gave the right answer 93 times out of 100. Most of the photos it learned from were taken close up and in good light, so expect it to be less reliable on photos taken quickly in a field.</dd>
+          <dt>Where it struggles</dt><dd>Blight and Gray Leaf Spot both leave long tan marks on a leaf, and the app confuses them. In testing it called 18 of the 86 Gray Leaf Spot leaves Blight, which is about one in five. When the answer is one of these two, treat it as a strong hint rather than a certainty.</dd>
+          <dt>Your photos</dt><dd>The reading happens inside your phone, so your photos are never uploaded and nobody else can see them.</dd>
+          <dt>Working offline</dt><dd>After you have opened this page once, the app and the model stay saved on your phone, so you can keep checking leaves in the field even when there is no network.</dd>
+          <dt>Keyboard</dt><dd>If you are using a computer, press <kbd>P</kbd> to read the leaf, <kbd>C</kbd> to clear the photo, and <kbd>1</kbd>, <kbd>2</kbd> or <kbd>3</kbd> to move between the three sections.</dd>
+          <dt>Before you act</dt><dd>This app is a helper, not a diagnosis. Show the leaf to your local agricultural extension officer before you spend money on any treatment.</dd>
         </dl>
       </section>
     </section>
@@ -395,37 +407,38 @@ kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); 
     <!-- LOG -->
     <section id="view-log" hidden style="display:grid;gap:16px">
       <div>
-        <h1>Log</h1>
-        <p class="label" style="margin-top:4px">The last 8 checks, kept on this phone only</p>
+        <h1>My checks</h1>
+        <p style="margin-top:6px;color:var(--ink-2);max-width:62ch">These are the last eight leaves you checked. They are saved on this phone only, so nobody else can see them, and they disappear if you clear your browser data.</p>
       </div>
       <section class="panel">
         <ul class="log" id="log"></ul>
-        <p class="label" id="log-empty">No checks yet.</p>
-        <div class="btnrow"><button type="button" class="btn" id="clear-log" hidden>Clear log</button></div>
+        <p id="log-empty" style="color:var(--ink-2)">You have not checked any leaves yet. Once you do, each result will be listed here with the photo you used.</p>
+        <div class="btnrow"><button type="button" class="btn" id="clear-log" hidden>Delete these results</button></div>
       </section>
     </section>
   </main>
 
-  <aside class="side" aria-label="Reading">
+  <aside class="side" aria-label="What the app read">
+    <span class="label side-only">How sure the app is</span>
     <div class="dial">
       <svg viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r="52" fill="none" stroke="var(--line-2)" stroke-width="10"></circle>
         <circle class="arc" id="arc" cx="60" cy="60" r="52" fill="none" stroke="var(--green)" stroke-width="10"
                 stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"></circle>
       </svg>
-      <div class="val"><span class="num dim" id="conf-num">--</span><span class="word" id="conf-word">Standby</span></div>
+      <div class="val"><span class="num dim" id="conf-num">--</span><span class="word" id="conf-word">Waiting</span></div>
     </div>
-    <div class="side-state" id="side-state">Standby</div>
+    <span class="label side-only">What the app sees in this photo</span>
     <div class="resp" id="resp"></div>
     <button class="btn primary block mono" type="button" id="predict" disabled>Predict</button>
-    <p class="side-hint" id="side-hint">Add a photo to begin</p>
+    <p class="side-hint" id="side-hint">Add a photo of a leaf to begin.</p>
   </aside>
 
   <div class="statusbar">
     <div><div class="k">Model</div><div class="v">MobileNetV2</div></div>
-    <div><div class="k">Train set</div><div class="v">2,930</div></div>
-    <div><div class="k">Test acc</div><div class="v">93.0%</div></div>
-    <div><div class="k">Checked</div><div class="v" id="served">0</div></div>
+    <div><div class="k">Learned from</div><div class="v">2,930</div></div>
+    <div><div class="k">Correct on tests</div><div class="v">93.0%</div></div>
+    <div><div class="k">You checked</div><div class="v" id="served">0</div></div>
   </div>
 </div>
 
@@ -440,41 +453,41 @@ const ARC = 326.7;
 
 const INFO = {
   'Blight': {
-    latin: 'Northern corn leaf blight',
-    looks: 'Long, cigar-shaped lesions, grey-green at first and turning tan. They usually start on the lower leaves.',
+    latin: 'Also called northern corn leaf blight',
+    looks: 'Blight makes long marks shaped like a cigar, which start out grey-green and dry into a pale tan colour. They usually show up on the lower leaves first and then move up the plant.',
     todo: [
-      'Walk the field and check other plants, especially the lower leaves.',
-      'After harvest, bury or remove the infected stalks and leaves.',
-      'Next season, plant a different crop in this field, such as beans, and choose a resistant maize variety.',
-      'If many plants are affected before tasseling, ask an extension officer whether a fungicide is worth the cost.',
+      'Walk through the field and look at other plants, especially the leaves near the ground, so you know how far it has spread.',
+      'After harvest, plough in or remove the old stalks and leaves, because the disease survives on them until the next season.',
+      'Next season, plant something other than maize in this field, such as beans, and choose a maize variety that resists blight.',
+      'If many plants are affected before the maize tassels, ask an extension officer whether spraying is worth the cost on your farm.',
     ],
   },
   'Common Rust': {
-    latin: 'Common rust',
-    looks: 'Small raised powdery spots, orange to brown, on both sides of the leaf. They rub off like dust.',
+    latin: 'Also called common rust',
+    looks: 'Rust shows up as small raised spots, orange to reddish brown, scattered on both sides of the leaf. If you rub them with your finger, they come off like powder.',
     todo: [
-      'Watch whether the spots spread to the upper leaves before the plant tassels.',
-      'Rust usually does less harm than blight, especially late in the season.',
-      'Next season, choose a rust-resistant maize variety.',
-      'Ask an extension officer about fungicide only if it spreads fast on young plants.',
+      'Look at the upper leaves over the next week to see whether the spots are spreading before the plant tassels.',
+      'Rust usually does less damage than blight, especially when it arrives late in the season, so do not panic if you only see a few spots.',
+      'Next season, ask for a maize variety that resists rust, because that is cheaper than spraying.',
+      'Only consider a fungicide if the spots spread quickly on young plants, and talk to an extension officer before you buy anything.',
     ],
   },
   'Gray Leaf Spot': {
-    latin: 'Gray leaf spot',
-    looks: 'Narrow rectangular lesions, grey to tan, with straight edges that run between the leaf veins.',
+    latin: 'Also called gray leaf spot',
+    looks: 'Gray leaf spot makes narrow rectangular marks with straight edges, grey to tan in colour, that run in lines between the veins of the leaf.',
     todo: [
-      'Talk to an extension officer early. It spreads quickly in warm, wet weather.',
-      'After harvest, bury or remove maize residue, because the disease survives in it.',
-      'Do not plant maize after maize in the same field. Rotate with another crop.',
-      'Next season, choose a tolerant maize variety.',
+      'Talk to an extension officer early, because this disease spreads fast in warm and wet weather.',
+      'After harvest, bury or remove the maize residue, since the disease lives on in the leaves and stalks left in the field.',
+      'Do not plant maize after maize in the same field. Rotate with another crop so the disease loses its host.',
+      'Next season, choose a maize variety that tolerates gray leaf spot, and space the plants so the leaves dry faster after rain.',
     ],
   },
   'Healthy': {
-    latin: 'No disease found on this leaf',
-    looks: 'No sign of Blight, Common Rust or Gray Leaf Spot.',
+    latin: 'No disease was found on this leaf',
+    looks: 'This leaf shows no sign of Blight, Common Rust or Gray Leaf Spot.',
     todo: [
-      'Keep checking the field every week, including the lower leaves.',
-      'Check several plants. One healthy leaf does not mean the whole field is clear.',
+      'Keep checking the field once a week, and remember to look at the lower leaves where disease usually starts.',
+      'Check several plants in different parts of the field, because one healthy leaf does not mean the whole crop is clear.',
     ],
   },
 };
@@ -494,7 +507,6 @@ let model = null, modelState = 'loading', current = null;
 /* ---------- Readout ---------- */
 function setPhase(word, hint) {
   $('conf-word').textContent = word;
-  $('side-state').textContent = word;
   if (hint !== undefined) $('side-hint').textContent = hint;
 }
 function setChip(state, text) {
@@ -543,8 +555,8 @@ document.addEventListener('keydown', e => {
 /* ---------- Model ---------- */
 async function loadModel() {
   if (typeof tf === 'undefined') {
-    setChip('error', 'Offline');
-    setPhase('Standby', 'The checker could not load. Check your connection and reload.');
+    setChip('error', 'No connection');
+    setPhase('Waiting', 'The app could not be loaded. Check your internet connection, then open this page again.');
     return;
   }
   let meta;
@@ -554,21 +566,21 @@ async function loadModel() {
     meta = await res.json();
   } catch (e) {
     setChip('missing', 'No model');
-    setPhase('Standby', 'The model has not been added to this page yet, so photos cannot be read.');
+    setPhase('Waiting', 'The model is missing from this page, so leaves cannot be read yet.');
     $('predict').disabled = true;
     return;
   }
   try {
-    const opts = { onProgress: p => setChip('loading', 'Loading ' + Math.round(p * 100) + '%') };
+    const opts = { onProgress: p => setChip('loading', 'Loading the model, ' + Math.round(p * 100) + '%') };
     model = meta.format === 'layers-model' ? await tf.loadLayersModel(MODEL_URL, opts) : await tf.loadGraphModel(MODEL_URL, opts);
     tf.tidy(() => { const o = model.predict(tf.zeros([1, IMG, IMG, 3])); (Array.isArray(o) ? o[0] : o).dataSync(); });
     setChip('ready', 'Model ready');
-    setPhase(current ? 'Ready' : 'Standby', current ? 'Press Predict to read this leaf' : 'Add a photo to begin');
+    setPhase(current ? 'Ready' : 'Waiting', current ? 'Press Predict and the app will read this leaf.' : 'Take or choose a photo of a maize leaf to begin.');
     $('predict').disabled = !current;
   } catch (e) {
     console.error(e);
     setChip('error', 'Model error');
-    setPhase('Standby', 'The model could not start on this phone. Try reloading or another browser.');
+    setPhase('Waiting', 'The model would not start on this phone. Try opening the page again, or use a different browser.');
   }
 }
 
@@ -629,9 +641,9 @@ function photoQuality(canvas) {
 
 function renderChecks(q) {
   const items = [];
-  if (q.brightness < 0.18) items.push(['warn', '<b>Very dark photo.</b> Move into daylight and take it again.']);
-  else if (q.brightness > 0.9) items.push(['warn', '<b>Too bright.</b> Keep direct sun off the lens, or shade the leaf.']);
-  if (q.sharpness < 30) items.push(['warn', '<b>Blurry photo.</b> Hold the phone still and tap the screen to focus.']);
+  if (q.brightness < 0.18) items.push(['warn', '<b>This photo is very dark.</b> Move into daylight and take it again, so that the marks on the leaf are visible.']);
+  else if (q.brightness > 0.9) items.push(['warn', '<b>This photo is very bright.</b> Keep direct sunlight off the lens, or shade the leaf with your hand, and take it again.']);
+  if (q.sharpness < 30) items.push(['warn', '<b>This photo looks blurry.</b> Hold the phone steady, tap the screen to focus, and take the photo again.']);
   const box = $('checks');
   box.innerHTML = items.map(([k, t]) => `<div class="check">${ICON[k]}<span>${t}</span></div>`).join('');
   box.hidden = items.length === 0;
@@ -650,21 +662,21 @@ function useImage(src, w, h, origin) {
   renderChecks(current.quality);
   showView('check');
   $('predict').disabled = modelState !== 'ready';
-  setPhase(modelState === 'ready' ? 'Ready' : 'Standby',
-    modelState === 'ready' ? 'Press Predict to read this leaf' : $('side-hint').textContent);
+  setPhase(modelState === 'ready' ? 'Ready' : 'Waiting',
+    modelState === 'ready' ? 'Press Predict and the app will read this leaf.' : $('side-hint').textContent);
 }
 
 function loadFile(file, origin) {
   if (!file) return;
-  if (!file.type.startsWith('image/')) return showCard('unsure', 'That file is not a photo', 'Choose a JPG or PNG photo of a maize leaf.');
+  if (!file.type.startsWith('image/')) return showCard('unsure', 'That file is not a photo', 'Please choose a photo of a maize leaf, saved as a JPG or PNG file.');
   const url = URL.createObjectURL(file);
   const img = new Image();
   img.onload = () => { useImage(img, img.naturalWidth, img.naturalHeight, origin); URL.revokeObjectURL(url); };
-  img.onerror = () => { showCard('unsure', 'This photo could not be opened', 'Take the photo again, or choose a JPG or PNG file.'); URL.revokeObjectURL(url); };
+  img.onerror = () => { showCard('unsure', 'This photo could not be opened', 'The file may be damaged. Take the photo again, or choose a different JPG or PNG file.'); URL.revokeObjectURL(url); };
   img.src = url;
 }
-$('cam').addEventListener('change', e => { loadFile(e.target.files[0], 'Camera'); e.target.value = ''; });
-$('pick').addEventListener('change', e => { loadFile(e.target.files[0], 'Gallery'); e.target.value = ''; });
+$('cam').addEventListener('change', e => { loadFile(e.target.files[0], 'Photo from your camera'); e.target.value = ''; });
+$('pick').addEventListener('change', e => { loadFile(e.target.files[0], 'Photo from your gallery'); e.target.value = ''; });
 $('drop').addEventListener('click', () => $('cam').click());
 $('drop').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('cam').click(); } });
 $('clear').addEventListener('click', () => {
@@ -673,13 +685,13 @@ $('clear').addEventListener('click', () => {
   $('verdict').hidden = true; $('checks').hidden = true;
   setResponse(null);
   $('predict').disabled = true;
-  setPhase('Standby', modelState === 'ready' ? 'Add a photo to begin' : $('side-hint').textContent);
+  setPhase('Waiting', modelState === 'ready' ? 'Take or choose a photo of a maize leaf to begin.' : $('side-hint').textContent);
 });
 
 const stage = $('stage');
 ['dragenter', 'dragover'].forEach(t => stage.addEventListener(t, e => { e.preventDefault(); stage.classList.add('drag'); }));
 ['dragleave', 'drop'].forEach(t => stage.addEventListener(t, e => { e.preventDefault(); stage.classList.remove('drag'); }));
-stage.addEventListener('drop', e => { const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) loadFile(f, 'Dropped file'); });
+stage.addEventListener('drop', e => { const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) loadFile(f, 'Photo you dragged in'); });
 
 /* ---------- Predict ---------- */
 $('predict').addEventListener('click', () => run(false));
@@ -688,15 +700,15 @@ async function run(forced) {
   if (!forced && current.quality.green < MIN_GREEN) return showBlocked();
   $('busy').hidden = false;
   $('predict').disabled = true;
-  setPhase('Reading', 'Reading the leaf…');
+  setPhase('Reading', 'The app is reading your photo now.');
   try {
     const probs = await predict(current.canvas);
     setResponse(probs);
     showResult(probs, forced);
   } catch (e) {
     console.error(e);
-    showCard('unsure', 'Something went wrong', 'The photo could not be read. Try again, or use another photo.');
-    setPhase('Standby', 'Try again with another photo');
+    showCard('unsure', 'Something went wrong', 'The app could not read this photo. Please try again, or use a different photo.');
+    setPhase('Waiting', 'Please try again with another photo.');
   } finally {
     $('busy').hidden = true;
     $('predict').disabled = false;
@@ -718,9 +730,9 @@ function showCard(kind, title, text, extra) {
 }
 
 function showBlocked() {
-  setPhase('Check photo', 'Very little leaf in the square');
+  setPhase('Check it', 'There is very little leaf inside the square.');
   showCard('blocked', 'This does not look like a maize leaf',
-    'The model only knows maize leaves. Very little green leaf shows inside the square. Take a closer photo so one leaf fills it.',
+    'The app can only read maize leaves, and it can hardly see any green leaf inside the square. Move closer to one leaf and take the photo again, so that the leaf fills the square. If this really is a maize leaf, you can ask the app to read it anyway.',
     '<div class="btnrow"><label class="btn primary" for="cam">Take a new photo</label><button type="button" class="btn" id="force">It is a maize leaf, read it anyway</button></div>');
   $('force').addEventListener('click', () => run(true));
 }
@@ -731,24 +743,24 @@ function showResult(probs, forced) {
   const label = CLASSES[i1], sure = p1 >= SURE, maybe = p1 >= MAYBE;
   const kind = !maybe ? 'unsure' : label === 'Healthy' ? 'healthy' : 'disease';
   const info = INFO[label];
-  setPhase(!maybe ? 'Not sure' : sure ? 'Confident' : 'Fair', !maybe ? 'Take another photo' : 'Result is below the photo');
+  setPhase(!maybe ? 'Not sure' : sure ? 'Confident' : 'Fairly sure', !maybe ? 'Please take another photo and try again.' : 'The full result is below the photo.');
 
   const notes = [];
-  if (maybe && !sure) notes.push('<b>Only fairly sure.</b> Photograph another leaf with the same marks to confirm.');
-  if (forced) notes.push('<b>You asked to read a photo that did not look like a leaf.</b> Treat this answer with extra care.');
+  if (maybe && !sure) notes.push('<b>The app is only fairly sure about this answer.</b> Photograph another leaf with the same marks and check it too, so you can see whether you get the same answer.');
+  if (forced) notes.push('<b>You asked the app to read a photo that did not look like a maize leaf.</b> Please treat this answer with extra care.');
   const pair = ['Blight', 'Gray Leaf Spot'];
   if (maybe && pair.includes(label)) {
     const other = pair.find(c => c !== label), op = probs[CLASSES.indexOf(other)];
-    notes.push(`<b>Blight and Gray Leaf Spot look alike.</b> In testing the model called 18 of the 86 Gray Leaf Spot leaves Blight, about 1 in 5.${op >= 0.15 ? ` On this photo it could also be ${other} (${pct(op)}).` : ''} An extension officer can tell them apart.`);
+    notes.push(`<b>Blight and Gray Leaf Spot are easy to mix up.</b> Both leave long tan marks, and in testing the app called about one in five Gray Leaf Spot leaves Blight.${op >= 0.15 ? ` On this photo the answer could also be ${other}, which the app rated ${pct(op)}.` : ''} An extension officer can tell the two apart on the plant.`);
   }
 
   const body = !maybe
-    ? `<div class="advice"><h3>What to do</h3><ul>
-         <li>Take another photo, closer, in daylight.</li>
-         <li>Keep the spots or marks inside the square and in focus.</li>
-         <li>If it is still not sure, show the leaf to an extension officer.</li></ul></div>`
-    : `<div class="advice"><h3>What it looks like</h3><p>${info.looks}</p>
-         <h3>What you can do</h3><ul>${info.todo.map(t => `<li>${t}</li>`).join('')}</ul></div>`;
+    ? `<div class="advice"><h3>What you can do next</h3><ul>
+         <li>Take another photo in daylight, holding the phone closer to the leaf.</li>
+         <li>Make sure the spots or marks sit inside the square and are in focus.</li>
+         <li>If the app is still unsure, show the leaf to your local extension officer.</li></ul></div>`
+    : `<div class="advice"><h3>What this looks like on a leaf</h3><p>${info.looks}</p>
+         <h3>What you can do next</h3><ul>${info.todo.map(t => `<li>${t}</li>`).join('')}</ul></div>`;
 
   const mini = `<div class="mini">${order.map(([p, i], k) => `
     <div class="r${k === 0 ? ' top' : ''}"><span>${CLASSES[i]}</span>
@@ -761,14 +773,14 @@ function showResult(probs, forced) {
   v.innerHTML = `
     <div class="verdict-head"><span class="badge">${ICON[kind]}</span>
       <div>
-        <div class="conf-line">${!maybe ? 'Not sure' : (sure ? 'Very likely' : 'Possibly') + ' · ' + pct(p1)}</div>
-        <h2>${!maybe ? 'The model cannot tell from this photo' : label}</h2>
-        <div class="sub">${!maybe ? `Closest: ${CLASSES[i1]} ${pct(p1)} or ${CLASSES[i2]} ${pct(p2)}` : info.latin}</div>
+        <div class="conf-line">${!maybe ? 'Not sure' : (sure ? 'Very likely' : 'Possibly') + ', ' + pct(p1) + ' sure'}</div>
+        <h2>${!maybe ? 'The app cannot tell from this photo' : label}</h2>
+        <div class="sub">${!maybe ? `The two closest answers were ${CLASSES[i1]} at ${pct(p1)} and ${CLASSES[i2]} at ${pct(p2)}, which is too close to call.` : info.latin}</div>
       </div></div>
     ${mini}
     ${notes.map(n => `<div class="note">${ICON.info}<span>${n}</span></div>`).join('')}
     ${body}
-    <p class="disclaimer">A helper, not a final diagnosis. Show the leaf to your local agricultural extension officer before spending money on treatment.</p>`;
+    <p class="disclaimer">This app is a helper, not a final diagnosis. Show the leaf to your local agricultural extension officer before you spend money on treatment.</p>`;
   scrollToVerdict();
 
   addLog({ thumb: current.thumb, label: maybe ? label : 'Not sure', conf: p1, t: Date.now() });
@@ -794,6 +806,7 @@ renderLog();
 $('guide-cards').innerHTML = ['Blight', 'Common Rust', 'Gray Leaf Spot'].map(c => `
   <section class="panel"><div><span class="label">${INFO[c].latin}</span><h2 style="margin-top:4px">${c}</h2></div>
   <p style="color:var(--ink-2);font-size:14.5px">${INFO[c].looks}</p>
+  <h3 style="margin-top:4px">What you can do</h3>
   <ul class="tips" style="font-size:14.5px">${INFO[c].todo.slice(0, 3).map(t => `<li>${t}</li>`).join('')}</ul></section>`).join('');
 
 /* ---------- Examples cropped from the dataset figure ---------- */
@@ -804,7 +817,7 @@ sheet.onload = () => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'ex';
-    btn.setAttribute('aria-label', 'Load the ' + e.label + ' example photo');
+    btn.setAttribute('aria-label', 'Read the example photo of ' + e.label);
     const c = document.createElement('canvas');
     c.width = c.height = 308;
     c.getContext('2d').drawImage(sheet, e.x, 40, 308, 308, 0, 0, 308, 308);
@@ -812,7 +825,7 @@ sheet.onload = () => {
     s.textContent = e.label;
     btn.append(c, s);
     btn.addEventListener('click', () => {
-      useImage(c, 308, 308, 'Example · ' + e.label);
+      useImage(c, 308, 308, 'Example photo of ' + e.label);
       $('scroll').scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     });
     $('ex-row').appendChild(btn);
@@ -827,3 +840,5 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 }
 </script>
+</body>
+</html>

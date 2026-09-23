@@ -1,0 +1,16 @@
+{
+  "name": "Maize Leaf Diagnostic",
+  "short_name": "Maize Check",
+  "description": "Photograph one maize leaf and find out whether it is healthy or shows Blight, Common Rust or Gray Leaf Spot.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f8f5",
+  "theme_color": "#12a150",
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "favicon.png", "sizes": "64x64", "type": "image/png" },
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

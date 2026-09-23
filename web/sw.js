@@ -1,7 +1,7 @@
 /* Keeps the app usable in a field with no signal: the page, the example photo
    and the model are stored on the phone after the first visit. */
 const CACHE = 'maize-leaf-v2';
-const SHELL = ['./', 'index.html', 'class_samples.png'];
+const SHELL = ['./', 'index.html', 'class_samples.png', 'favicon.svg', 'favicon.png', 'apple-touch-icon.png', 'manifest.webmanifest'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

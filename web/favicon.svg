@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Maize cob">
+  <rect width="64" height="64" rx="14" fill="#12a150"/>
+  <g>
+    <path d="M30 52C16 47 11 34 13 20c12 2 17 14 17 32z" fill="#0c7d3d"/>
+    <path d="M34 52c14-5 19-18 17-32-12 2-17 14-17 32z" fill="#0a6b34"/>
+    <ellipse cx="32" cy="30" rx="10" ry="19" fill="#f5c21a"/>
+    <path d="M32 11c5.5 0 10 8.5 10 19s-4.5 19-10 19z" fill="#e0a800" opacity=".55"/>
+    <g fill="#c98c00" opacity=".75">
+      <circle cx="28" cy="17" r="1.7"/><circle cx="36" cy="17" r="1.7"/>
+      <circle cx="24.5" cy="23" r="1.7"/><circle cx="32" cy="23" r="1.7"/><circle cx="39.5" cy="23" r="1.7"/>
+      <circle cx="24" cy="30" r="1.7"/><circle cx="32" cy="30" r="1.7"/><circle cx="40" cy="30" r="1.7"/>
+      <circle cx="24.5" cy="37" r="1.7"/><circle cx="32" cy="37" r="1.7"/><circle cx="39.5" cy="37" r="1.7"/>
+      <circle cx="28" cy="43" r="1.7"/><circle cx="36" cy="43" r="1.7"/>
+    </g>
+  </g>
+</svg>
