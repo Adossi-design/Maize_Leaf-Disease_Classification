@@ -382,8 +382,8 @@ kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); 
         <h2>What this tool can and cannot do</h2>
         <dl class="kv">
           <dt>Knows</dt><dd>Four things only: Blight, Common Rust, Gray Leaf Spot and healthy maize leaves. It cannot recognise other crops, pests, or damage from drought or poor soil.</dd>
-          <dt>Accuracy</dt><dd>Right 93% of the time on 629 test photos. It learned mostly from close-up photos in good light, so photos taken in a field are less reliable.</dd>
-          <dt>Weak spot</dt><dd>Blight and Gray Leaf Spot look alike. In testing the model called about 1 in 4 Gray Leaf Spot leaves Blight.</dd>
+          <dt>Accuracy</dt><dd>Right 93.0% of the time on the 629 test photos it never trained on. It learned mostly from close-up photos in good light, so photos taken in a field are less reliable.</dd>
+          <dt>Weak spot</dt><dd>Blight and Gray Leaf Spot look alike. In testing the model called 18 of the 86 Gray Leaf Spot leaves Blight, about 1 in 5.</dd>
           <dt>Privacy</dt><dd>The check runs on your phone. Photos are not uploaded and no one else sees them.</dd>
           <dt>No signal</dt><dd>Once the page has opened on this phone once, it keeps working without network, because the app and the model are stored on the phone.</dd>
           <dt>Keys</dt><dd><kbd>P</kbd> reads the leaf, <kbd>C</kbd> clears the photo, <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> switch sections.</dd>
@@ -424,7 +424,7 @@ kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); 
   <div class="statusbar">
     <div><div class="k">Model</div><div class="v">MobileNetV2</div></div>
     <div><div class="k">Train set</div><div class="v">2,930</div></div>
-    <div><div class="k">Test acc</div><div class="v">93.2%</div></div>
+    <div><div class="k">Test acc</div><div class="v">93.0%</div></div>
     <div><div class="k">Checked</div><div class="v" id="served">0</div></div>
   </div>
 </div>
@@ -739,7 +739,7 @@ function showResult(probs, forced) {
   const pair = ['Blight', 'Gray Leaf Spot'];
   if (maybe && pair.includes(label)) {
     const other = pair.find(c => c !== label), op = probs[CLASSES.indexOf(other)];
-    notes.push(`<b>Blight and Gray Leaf Spot look alike.</b> In testing the model called about 1 in 4 Gray Leaf Spot leaves Blight.${op >= 0.15 ? ` On this photo it could also be ${other} (${pct(op)}).` : ''} An extension officer can tell them apart.`);
+    notes.push(`<b>Blight and Gray Leaf Spot look alike.</b> In testing the model called 18 of the 86 Gray Leaf Spot leaves Blight, about 1 in 5.${op >= 0.15 ? ` On this photo it could also be ${other} (${pct(op)}).` : ''} An extension officer can tell them apart.`);
   }
 
   const body = !maybe

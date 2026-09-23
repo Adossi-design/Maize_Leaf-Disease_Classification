@@ -81,6 +81,24 @@ baseline CNN beat every classical model, augmentation did not improve results, a
 class-imbalance fixes did not beat the baseline. Gray Leaf Spot stayed the hardest class
 for every model, usually confused with Blight.
 
+## The web app
+
+The `web/` folder holds a web app that lets a farmer photograph one maize leaf
+and get a reading back, with plain advice for each disease and a warning
+whenever Blight and Gray Leaf Spot are in play. The model runs inside the
+browser with TensorFlow.js, so photos are never uploaded, and a service worker
+keeps the app and the model on the phone, so it still works with no signal. It
+is deployed on Vercel from this repository.
+
+The deployed model is a retrained E9, produced on a laptop CPU from the split
+recorded in `split.csv`, so it saw exactly the same training, validation and
+test images as the notebook run. It scores **0.9300 accuracy and 0.9102
+macro-F1** on the 629 test images, next to the notebook's 0.9316 and 0.9117.
+The difference is ordinary run-to-run variation. Everything else in this
+repository, including the results table above, describes the notebook run.
+`web/model/README.md` records the per-class scores and how the conversion was
+done.
+
 ## Links
 
 - Report: https://docs.google.com/document/d/1b7piDS5D7QGkNwsOnpGy9yrOy5c_IAWAk8_6HFKNihY/edit?usp=sharing
