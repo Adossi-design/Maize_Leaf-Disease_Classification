@@ -37,3 +37,6 @@ report/
 Thumbs.db
 .vscode/
 .idea/
+
+# Local virtualenvs used for training and conversion
+.venv-tfjs/
