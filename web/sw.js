@@ -1,6 +1,6 @@
 /* Keeps the app usable in a field with no signal: the page, the example photo
    and the model are stored on the phone after the first visit. */
-const CACHE = 'maize-leaf-v1';
+const CACHE = 'maize-leaf-v2';
 const SHELL = ['./', 'index.html', 'class_samples.png'];
 
 self.addEventListener('install', e => {

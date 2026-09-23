@@ -432,7 +432,7 @@ kbd { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
 <script>
 /* Matches the notebook: LabelEncoder class order, 128x128 input scaled to [0, 1]. */
-const MODEL_URL = 'model/model.json';
+const MODEL_URL = 'model/model.json?v=2';   // the query defeats a stale 404 cached before the model existed
 const IMG = 128;
 const CLASSES = ['Blight', 'Common Rust', 'Gray Leaf Spot', 'Healthy'];
 const SURE = 0.80, MAYBE = 0.55, MIN_GREEN = 0.10;
@@ -549,7 +549,7 @@ async function loadModel() {
   }
   let meta;
   try {
-    const res = await fetch(MODEL_URL, { cache: 'force-cache' });
+    const res = await fetch(MODEL_URL);
     if (!res.ok) throw new Error('missing');
     meta = await res.json();
   } catch (e) {
