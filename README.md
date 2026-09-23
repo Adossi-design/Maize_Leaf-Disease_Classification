@@ -101,6 +101,8 @@ done.
 
 ## Links
 
-- Report: https://docs.google.com/document/d/1b7piDS5D7QGkNwsOnpGy9yrOy5c_IAWAk8_6HFKNihY/edit?usp=sharing
+- Live app: https://maize-leaf-disease-classification.vercel.app
+- Report: [report/report.md](report/report.md), also on
+  [Google Docs](https://docs.google.com/document/d/1b7piDS5D7QGkNwsOnpGy9yrOy5c_IAWAk8_6HFKNihY/edit?usp=sharing)
 
 - Demo video: https://docs.google.com/presentation/d/1_piAlzaqfzqzOVnwg2V6BCT9THYPzBV1zBZMvfn9g_g/edit?usp=sharing

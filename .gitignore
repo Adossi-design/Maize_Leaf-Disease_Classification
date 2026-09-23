@@ -29,8 +29,7 @@ venv/
 sample_data/
 .config/
 
-# Written report (kept local, not pushed)
-report/
+# Written report: published with the project, see report/report.md
 
 # OS / editor junk
 .DS_Store
